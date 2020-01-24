@@ -52,14 +52,10 @@ atributos = base.iloc[:,1:5].values
 #classes
 Y = base.iloc[:,0].values
 
-#normalização atributos/provisores
-scaler = StandardScaler()
-scaler.fit(atributos)
-X = scaler.transform(atributos)
 
 # Split the dataset into training (75%) and testing (25%) data
 previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = train_test_split(
-X, Y, test_size=0.25, random_state=0)
+atributos, Y, test_size=0.25, random_state=0)
 
 classificador = SVC(kernel='linear')
 
@@ -71,4 +67,4 @@ previsoes = classificador.predict(previsores_teste)
 precisao = accuracy_score(classe_teste, previsoes)
 matriz = confusion_matrix(classe_teste, previsoes)
 
-joblib.dump(classificador, 'classifier_spotify01.joblib')
+joblib.dump(classificador, '/home/vinicius/Documents/mestrado-UFAL/Topico-especial-em-mineracao-e-exploracao-de-dados/app_ml_basic/back-app/classifier_spotify01.joblib')
