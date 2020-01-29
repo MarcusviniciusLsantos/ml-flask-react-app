@@ -37,7 +37,6 @@ modelSpotify= app.model('Prediction Spotify params',
 				  							description="acousticness", 
     					  				 	help="acousticness cannot be blank")})
 
-
 classifier = joblib.load('classifier.joblib')
 classifierSpotify = joblib.load('classifier_spotify01.joblib')
 
