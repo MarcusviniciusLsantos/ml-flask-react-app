@@ -28,7 +28,56 @@ class App extends Component {
         liveness: 5,
         acousticness: 4
       },
-      result2: ""
+      result2: "",
+      genders: {
+        'dance pop': "https://www.youtube.com/embed/-zYz0OhqzXM",
+        "neo mellow": "https://www.youtube.com/embed/Yk9G7OyKwLM",
+        "detroit hip hop": "https://www.youtube.com/embed/pq-zgi_RnY4",
+        "pop": "https://www.youtube.com/embed/SlPhMPnQ58k",
+        "canadian pop": "https://www.youtube.com/embed/q0hyYWKXF0Q",
+        "hip pop": "https://www.youtube.com/embed/aIHF7u9Wwiw",
+        "barbadian pop": "https://www.youtube.com/embed/9qaVcyYkDg4",
+        "atl hip hop": "https://www.youtube.com/embed/5YGSVLhWo6A",
+        "australian pop": "https://www.youtube.com/embed/q0hyYWKXF0Q",
+        "indie pop": "https://www.youtube.com/embed/bpOSxM0rNPM",
+        "art pop": "https://www.youtube.com/embed/JNJv-Ebi67I",
+        "colombian pop": "https://www.youtube.com/embed/tbneQDc2H3I",
+        "big room": "https://www.youtube.com/embed/nFjTcJT2dTw",
+        "british soul": "https://www.youtube.com/embed/-nwdjQmc_N8",
+        "chicago rap": "https://www.youtube.com/embed/YWyHZNBz6FE",
+        "acoustic pop": "https://www.youtube.com/embed/uzgp65UnPxA",
+        "permanent wave": "https://www.youtube.com/embed/7vQEucBgxGQ",
+        "boy band": "https://www.youtube.com/embed/4fndeDfaWCg",
+        "baroque pop": "https://www.youtube.com/embed/kZj-o42szuk",
+        "celtic rock": "https://www.youtube.com/embed/Vj41xZHA5Eg",
+        "electro": "https://www.youtube.com/embed/HhjHYkPQ8F0",
+        "complextro": "https://www.youtube.com/embed/jp_pClmkqUo",
+        "canadian hip hop": "https://www.youtube.com/embed/SN6jcMruHfA",
+        "alaska indie": "https://www.youtube.com/embed/hIE2eNDmV5s",
+        "folk-pop": "https://www.youtube.com/embed/OruY8u7Rhx8",
+        "metropopolis": "https://www.youtube.com/embed/VJJhexFlJB0",
+        "australian hip hop": "https://www.youtube.com/embed/aB16fJpoj-I",
+        "electropop": "https://www.youtube.com/embed/qrO4YZeyl0I",
+        "australian dance": "https://www.youtube.com/embed/m2vi6sfE8Ik",
+        "candy pop": "https://www.youtube.com/embed/vjI1QTjfyYE",
+        "hollywood": "https://www.youtube.com/embed/wpfqHdRoGPA",
+        "canadian contemporary r&b": "https://www.youtube.com/embed/bnVUHWCynig",
+        "irish singer-songwriter": "https://www.youtube.com/embed/eHQG6-DojVw",
+        "tropical house": "https://www.youtube.com/embed/yFLtfaJwyfw",
+        "belgian edm": "https://www.youtube.com/embed/bWPOLL_Rr8U",
+        "french indie pop": "https://www.youtube.com/embed/eyk-Sliy8RU",
+        "latin": "https://www.youtube.com/embed/OSUxrSe5GbI",
+        "canadian latin": "https://www.youtube.com/embed/L86gQQBYSc4",
+        "edm": "https://www.youtube.com/embed/gCYcHz2k5x0",
+        "downtempo": "https://www.youtube.com/embed/iVTqxdEXFkA",
+        "brostep": "https://www.youtube.com/embed/OF6fSgOFhvQ",
+        "moroccan pop": "https://www.youtube.com/embed/ZvvcQrmbggw",
+        "escape room": "https://www.youtube.com/embed/aW3-E3My-kc",
+        "alternative r&b": "https://www.youtube.com/embed/X0t8zeEiqEY",
+        "electronic trap": "https://www.youtube.com/embed/rpJtWTtxbCA",
+        "danish pop": "https://www.youtube.com/embed/_xAjt64AoD0"
+      },
+      youtubeUrl: ""
     };
   }
 
@@ -60,7 +109,12 @@ class App extends Component {
           result: response.result,
           isLoading: false
         });
-      });
+      }).catch((err) => {
+        this.setState({
+          result: "Api error",
+          isLoading: false
+        })
+      })
   }
 
   handleCancelClick = (event) => {
@@ -91,11 +145,32 @@ class App extends Component {
       })
       .then(response => response.json())
       .then(response => {
+        console.log('testing', this.state.genders["dance pop"][0])
+        Object.keys(this.state.genders).map((item, index) => {
+          // console.log('item ->', item)
+          // console.log('resp ->', response.result)
+          let item2 = `'${item}'`
+          if (response.result === item2) {
+            console.log('resp ->', response.result, "item ->", item)
+            this.setState({
+              youtubeUrl: this.state.genders[item]
+            })
+            console.log('url', this.state.genders[item])
+          }
+        })
         this.setState({
-          result2: response.result,
+          result2: `Gender: ${response.result}`,
           isLoading: false
         });
-      });
+
+
+      }).catch((err) => {
+        console.log('err ->', err)
+        this.setState({
+          result2: "Api error",
+          isLoading: false
+        })
+      })
   }
 
   handleCancelSpotifyClick = (event) => {
@@ -142,66 +217,75 @@ class App extends Component {
               </Form.Group>
             </Form.Row>
           </Form>
-
           <Form.Row>
             {!this.state.ButtonSpotify ?
-              <div className="content">
-                <h4>Spotify Gender predict</h4>
-                <Form>
-                  <Form.Row>
-                    <Form.Group as={Col}>
-                      <Form.Label>Energy</Form.Label>
-                      <Form.Control placeholder="Ex: 0-99" value={formData2.energy} onChange={this.handleChangeSpotify} name="energy" />
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <Form.Label>Danceability</Form.Label>
-                      <Form.Control
-                        placeholder="Ex: 0-99"
-                        value={formData2.danceability}
-                        name="danceability"
-                        onChange={this.handleChangeSpotify} />
-                    </Form.Group>
-                  </Form.Row>
-                  <Form.Row>
-                    <Form.Group as={Col}>
-                      <Form.Label>Liveness</Form.Label>
-                      <Form.Control placeholder="Ex: 0-99" value={formData2.liveness} onChange={this.handleChangeSpotify} name="liveness" />
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <Form.Label>Acousticness</Form.Label>
-                      <Form.Control placeholder="Ex: 0-99" value={formData2.acousticness} onChange={this.handleChangeSpotify} name="acousticness" />
-                    </Form.Group>
-                  </Form.Row>
-                  <Row>
-                    <Col>
-                      <Button
-                        block
-                        variant="success"
-                        disabled={isLoading}
-                        onClick={!isLoading ? this.handlePredictSpotifyClick : null}>
-                        {isLoading ? 'Making prediction' : 'Predict'}
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        block
-                        variant="danger"
-                        disabled={isLoading}
-                        onClick={this.handleCancelSpotifyClick}>
-                        Reset prediction
+              <Container>
+                <div className="content">
+                  <h4>Spotify Gender predict</h4>
+                  <Form>
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Label>Energy</Form.Label>
+                        <Form.Control placeholder="Ex: 0-99" value={formData2.energy} onChange={this.handleChangeSpotify} name="energy" />
+                      </Form.Group>
+                      <Form.Group as={Col}>
+                        <Form.Label>Danceability</Form.Label>
+                        <Form.Control
+                          placeholder="Ex: 0-99"
+                          value={formData2.danceability}
+                          name="danceability"
+                          onChange={this.handleChangeSpotify} />
+                      </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Label>Liveness</Form.Label>
+                        <Form.Control placeholder="Ex: 0-99" value={formData2.liveness} onChange={this.handleChangeSpotify} name="liveness" />
+                      </Form.Group>
+                      <Form.Group as={Col}>
+                        <Form.Label>Acousticness</Form.Label>
+                        <Form.Control placeholder="Ex: 0-99" value={formData2.acousticness} onChange={this.handleChangeSpotify} name="acousticness" />
+                      </Form.Group>
+                    </Form.Row>
+                    <Row>
+                      <Col>
+                        <Button
+                          block
+                          variant="success"
+                          disabled={isLoading}
+                          onClick={!isLoading ? this.handlePredictSpotifyClick : null}>
+                          {isLoading ? 'Making prediction' : 'Predict'}
+                        </Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          block
+                          variant="danger"
+                          disabled={isLoading}
+                          onClick={this.handleCancelSpotifyClick}>
+                          Reset prediction
                 </Button>
-                    </Col>
-                  </Row>
-                </Form>
-                {result2 === "" ? null :
-                  (<Row>
-                    <Col className="result-container">
-                      <h5 id="result">{result2}</h5>
-                    </Col>
-                  </Row>)
-                }
-              </div>
+                      </Col>
+                    </Row>
+                  </Form>
+                  {result2 === "" ? null :
+                    (
+                      <div>
+                        <Row>
+                          <Col className="result-container">
+                            <h5 id="result">{result2}</h5>
+                          </Col>
+                        </Row>
+                        <div style={{ alignItems: 'center' }}>
+                          <iframe style={{ marginTop: '2%', marginLeft: '8%' }} width="600" height="200" src={this.state.youtubeUrl} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        </div>
+                      </div>)
+                  }
+
+                </div>
+              </Container>
               : null}
+
 
             {!this.state.ButtonCredit ?
               <div className="content">
