@@ -1,5 +1,5 @@
 aniso8601==6.0.0
-joblib==0.14.1
+joblib==1.2.0
 attrs==19.1.0
 Click==7.0
 Flask==1.0.2
